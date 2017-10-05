@@ -1,7 +1,8 @@
 def range(start, range_end)
-  return [] if start == range_end
-  [start] + range(start + 1, range_end)
+  return [] if start >= range_end
+  range(start + 1, range_end).unshift(start)
 end
+# p range(2, 6)
 
 def exp(base, power)
   return 1 if power == 0
@@ -50,10 +51,16 @@ end
 # p subsets([1, 2, 3])
 
 def permutations(arr)
-  return arr if arr.length == 1
-  arr.each_with_index { |num, i| num + permutations(arr[0...i])+ }
-
+  return [arr] if arr.length == 1
+  result = []
+  arr.each_with_index do |num, i|
+    permutations(arr[0...i] + arr[i + 1..-1]).each do |s_arr|
+      result << [num] + s_arr
+    end
+  end
+  result
 end
+# p permutations([1,2,3])
 
 def bsearch(arr, target)
   return nil if arr.empty?
@@ -118,3 +125,18 @@ def greedy_make_change(total, coins)
 
   Array.new(count, big_coin) + greedy_make_change(change, coins)
 end
+
+def better_make_change(change, coins)
+  results = []
+  coins.each_with_index do |coin, i|
+    leftover = change - coin
+    next if leftover < 0
+    return [coin] if leftover.zero?
+    results << [coin] + better_make_change(leftover, coins[i..-1])
+  end
+
+  best = results.first || []
+  results.each { |result| best = result if result.length < best.length }
+  best
+end
+# p better_make_change(93, [25, 10, 5, 1])
