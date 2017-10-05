@@ -13,6 +13,14 @@ def exp(base, power)
   end
 end
 
+def exp(base, power)
+  return 1 if power.zero?
+  half_base = base / 2
+  smaller_exp = exp(half_base, power - 1)
+  half_base * half_base * smaller_exp * smaller_exp
+end
+p exp(3, 3)
+
 def deep_dup(arr) # [8, [1,2], [3,4], [5,6]]
   #base case:
   return ["hi"] if arr.empty?
