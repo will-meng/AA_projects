@@ -13,41 +13,31 @@ def exp(base, power)
   end
 end
 
-def exp(base, power)
+def exp2(base, power)
   return 1 if power.zero?
-  half_base = base / 2
-  smaller_exp = exp(half_base, power - 1)
-  half_base * half_base * smaller_exp * smaller_exp
+  smaller_exp = exp2(base, power / 2)
+  if power.even?
+    smaller_exp * smaller_exp
+  else
+    base * smaller_exp * smaller_exp
+  end
 end
-p exp(3, 3)
+# p exp2(2, 4)
 
-def deep_dup(arr) # [8, [1,2], [3,4], [5,6]]
-  #base case:
-  return ["hi"] if arr.empty?
-  return [arr] unless arr.first.is_a?(Array)
-  p "first_dup: #{arr.first}"
-  p "range_dup: #{arr[1..-1]}"
-  #inductive step:
-  # first el of arr, run deep_dup on remaining els
-  deep_dup(arr.first) + deep_dup(arr[1..-1])
-end
-
-# [8, [1,2], [3,4], [5,6]]
 def deep_dup(arr)
   arr.map { |el| el.is_a?(Array) ? deep_dup(el) : el }
 end
 
 def fibonacci(n)
-  #base:
   return nil if n < 1
   return [1] if n == 1
   return [1, 1] if n == 2
 
-  #inductive:
   previous = fibonacci(n - 1)
   current = previous.last + previous[-2]
-  previous + [current]
+  previous << current
 end
+# p fibonacci(7)
 
 def subsets(arr)
   return [[]] if arr.empty?
@@ -59,52 +49,45 @@ end
 # p subsets([1, 2, 3])
 
 def permutations(arr)
-  return [arr] if arr.length == 1
+  return [arr] if arr.length <= 1
   result = []
   arr.each_with_index do |num, i|
-    permutations(arr[0...i] + arr[i + 1..-1]).each do |s_arr|
+    permutations(arr.take(i) + arr.drop(i + 1)).each do |s_arr|
       result << [num] + s_arr
     end
   end
   result
 end
-# p permutations([1,2,3])
+# p permutations([1, 2, 3])
 
 def bsearch(arr, target)
   return nil if arr.empty?
-  midx = arr.length / 2
-  if target > arr[midx]
-    result = bsearch(arr[midx..-1], target)
-    if result.nil?
-      nil
-    else
-      result + midx
-    end
-  elsif target == arr[midx]
-    return midx
+
+  mid_idx = arr.length / 2
+  if target > arr[mid_idx]
+    right_idx = bsearch(arr[mid_idx..-1], target)
+    right_idx.nil? ? nil : mid_idx + right_idx
+  elsif target < arr[mid_idx]
+    left_idx = bsearch(arr[0...mid_idx], target)
+    left_idx.nil? ? nil : left_idx
   else
-    result = bsearch(arr[0...midx], target)
-    if result.nil?
-      nil
-    else
-      midx - arr[0...midx].length + result
-    end
+    mid_idx
   end
 end
-
+# p bsearch([1, 2, 3, 4, 5, 6], 6) # => 5
+# p bsearch([1, 2, 3, 4, 5, 6], 0) # => nil
 
 def merge_sort(arr)
-  return arr if arr.length == 1
-  midx = arr.length / 2
+  return arr if arr.length <= 1
 
-  merge_and_sort(merge_sort(arr[0...midx]), merge_sort(arr[midx..-1]))
+  midx = arr.length / 2
+  merge_and_sort(merge_sort(arr.take(midx)), merge_sort(arr.drop(midx)))
 end
 
 def merge_and_sort(left, right)
   merged = []
 
   until left.length.zero? && right.length.zero?
-
     if left.empty?
       merged << right.shift
     elsif right.empty?
@@ -114,37 +97,45 @@ def merge_and_sort(left, right)
     else
       merged << left.shift
     end
-
   end
 
   merged
 end
+# p merge_sort([20, 3, 7, 49, 21, 16, 96, 6])
 
-def greedy_make_change(total, coins)
+def greedy_make_change(target, coins)
+  return nil if coins.empty?
+
+  coins = coins.sort.reverse
   big_coin = coins.shift
-  change = total
+
+  leftover = target
   count = 0
-  until change < big_coin
-    change -= big_coin
+  until leftover < big_coin
+    leftover -= big_coin
     count += 1
   end
+  return Array.new(count, big_coin) if leftover.zero?
 
-  return Array.new(count, big_coin) if change <= 0
-
-  Array.new(count, big_coin) + greedy_make_change(change, coins)
+  sub_problem = greedy_make_change(leftover, coins)
+  sub_problem.nil? ? nil : Array.new(count, big_coin) + sub_problem
 end
+# p greedy_make_change(14, [10, 7, 1])
 
-def better_make_change(change, coins)
+def better_make_change(target, coins)
   results = []
   coins.each_with_index do |coin, i|
-    leftover = change - coin
+    leftover = target - coin
     next if leftover < 0
     return [coin] if leftover.zero?
-    results << [coin] + better_make_change(leftover, coins[i..-1])
+    sub_problem = better_make_change(leftover, coins.drop(i))
+    return nil if sub_problem.nil?
+    results << [coin] + sub_problem
   end
+  return nil if results.empty?
 
-  best = results.first || []
+  best = results.first
   results.each { |result| best = result if result.length < best.length }
   best
 end
-# p better_make_change(93, [25, 10, 5, 1])
+# p better_make_change(14, [10, 7, 1])
