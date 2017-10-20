@@ -115,7 +115,7 @@ def teachers_and_divisions
     SELECT
       name,
       CASE
-      WHEN dept_id = 1 OR dept_id = 2 THEN
+      WHEN dept_id IN (1, 2) THEN
         'Sci'
       ELSE
         'Art'
@@ -133,7 +133,7 @@ def teachers_and_divisions_two
     SELECT
       name,
       CASE
-      WHEN dept_id = 1 OR dept_id = 2 THEN
+      WHEN dept_id IN (1, 2) THEN
         'Sci'
       WHEN dept_id = 3 THEN
         'Art'

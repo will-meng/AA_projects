@@ -217,36 +217,57 @@ def craiglockhart_to_sighthill
   # Find the routes involving two buses that can go from Craiglockhart to
   # Sighthill. Show the bus no. and company for the first bus, the name of the
   # stop for the transfer, and the bus no. and company for the second bus.
+  # execute(<<-SQL)
+  #   SELECT DISTINCT
+  #     a.num, a.company, stops.name, d.num, d.company
+  #   FROM
+  #     routes a
+  #   JOIN
+  #     routes b ON a.company = b.company AND a.num = b.num
+  #   JOIN
+  #     stops ON b.stop_id = stops.id
+  #   JOIN
+  #     routes c ON stops.id = c.stop_id
+  #   JOIN
+  #     routes d ON c.company = d.company AND c.num = d.num
+  #   WHERE
+  #     a.stop_id IN (
+  #       SELECT
+  #         id
+  #       FROM
+  #         stops
+  #       WHERE
+  #         name = 'Craiglockhart'
+  #     )
+  #     AND
+  #     d.stop_id IN (
+  #       SELECT
+  #         id
+  #       FROM
+  #         stops
+  #       WHERE
+  #         name = 'Sighthill'
+  #     )
+  # SQL
+
   execute(<<-SQL)
     SELECT DISTINCT
-      a.num, a.company, stops.name, d.num, d.company
+      a.num, a.company, s2.name, d.num, d.company
     FROM
-      routes a
+      stops s1
+    JOIN
+      routes a ON s1.id = a.stop_id
     JOIN
       routes b ON a.company = b.company AND a.num = b.num
     JOIN
-      stops ON b.stop_id = stops.id
+      stops s2 ON b.stop_id = s2.id
     JOIN
-      routes c ON stops.id = c.stop_id
+      routes c ON s2.id = c.stop_id
     JOIN
       routes d ON c.company = d.company AND c.num = d.num
+    JOIN
+      stops s3 ON d.stop_id = s3.id
     WHERE
-      a.stop_id IN (
-        SELECT
-          id
-        FROM
-          stops
-        WHERE
-          name = 'Craiglockhart'
-      )
-      AND
-      d.stop_id IN (
-        SELECT
-          id
-        FROM
-          stops
-        WHERE
-          name = 'Sighthill'
-      )
+      s1.name = 'Craiglockhart' AND s3.name = 'Sighthill'
   SQL
 end
