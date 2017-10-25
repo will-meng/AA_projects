@@ -24,6 +24,7 @@ ul li a, figcaption a {
 of the header element */
 header > img {
   width: 100px;
+  float: left;
 }
 
 /* Selects all elements with the class attribute "ingredients-list" */
@@ -87,18 +88,18 @@ nav ul li a {
 
 body {
     margin: 0 auto; /* Common Centering Technique */
-    width: 900px;
+    width: 60%;
 }
 
 section {
-    width: 700px;
-    display: inline-block;
-    vertical-align: top;
+    /*width: 700px;*/
+    /*display: inline-block;*/
+    /*vertical-align: top;*/
 }
 
 aside {
-    width: 180px;
-    margin-right: 15px;
+    /*width: 180px;
+    margin-right: 15px;*/
     display: inline-block;
 }
 
@@ -122,18 +123,4 @@ textarea {
 
 label {
   display: block;
-}
-
-header img {
-  float: left;
-}
-
-.cf:after {
-  content: ""
-  display: block;
-  clear: both;
-}
-
-header {
-  height: 80px;
 }

@@ -1,0 +1,37 @@
+<table>
+  <tr>
+    <td>name: </td>
+    <td><%= @cat.first.name %></td>
+  </tr>
+
+  <tr>
+    <td>color: </td>
+    <td>  <%= @cat.first.color %></td>
+  </tr>
+
+  <tr>
+    <td>sex: </td>
+    <td> <%=@cat.first.sex %></td>
+  </tr>
+
+  <tr>
+    <td>birth_date:</td>
+    <td><%= @cat.first.birth_date %></td>
+  </tr>
+
+  <tr>
+    <td>description: </td>
+    <td><%=@cat.first.description%></td>
+  </tr>
+
+</table>
+
+<% @cat.each do |c| %>
+  <% if c.status == 'APPROVED' %>
+  <p>  start date: <%= c.start_date %>
+    <br>
+       end date: <%= c.end_date %>
+  </p>
+  <% end %>
+  <br>
+<% end %>

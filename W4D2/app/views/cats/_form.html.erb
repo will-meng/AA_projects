@@ -1,0 +1,65 @@
+<% action_url = action == :edit ? cat_url(cat.id) : cats_url %>
+
+<form action="<%=action_url%>" method="post">
+<% if action == :edit %>
+  <input type="hidden" name="_method" value="patch">
+<% end %>
+
+  <label for="name">Name: </label>
+  <input id="name" type="text" name="cat[name]" value="<%= cat.name %>">
+
+  <br>
+
+  <label for="color">Color: </label>
+
+    <input id="0" type="radio" name="cat[color]" value="<%= cat.colors[0] %>" <%= cat.color == cat.colors[0] ? "checked" : ""%>>
+    <label for="0"><%= cat.colors[0] %></label>
+
+    <input id="1" type="radio" name="cat[color]" value="<%= cat.colors[1] %>" <%= cat.color == cat.colors[1] ? "checked" : ""%>>
+    <label for="1"><%= cat.colors[1] %></label>
+
+    <input id="2" type="radio" name="cat[color]" value="<%= cat.colors[2] %>" <%= cat.color == cat.colors[2] ? "checked" : ""%>>
+    <label for="2"><%= cat.colors[2] %></label>
+
+    <input id="3" type="radio" name="cat[color]" value="<%= cat.colors[3] %>" <%= cat.color == cat.colors[3] ? "checked" : ""%>>
+    <label for="3"><%= cat.colors[3] %></label>
+
+    <input id="4" type="radio" name="cat[color]" value="<%= cat.colors[4] %>" <%= cat.color == cat.colors[4] ? "checked" : ""%>>
+    <label for="4"><%= cat.colors[4] %></label>
+
+    <input id="5" type="radio" name="cat[color]" value="<%= cat.colors[5] %>" <%= cat.color == cat.colors[5] ? "checked" : ""%>>
+    <label for="5"><%= cat.colors[5] %></label>
+
+    <input id="6" type="radio" name="cat[color]" value="<%= cat.colors[6] %>" <%= cat.color == cat.colors[6] ? "checked" : ""%>>
+    <label for="6"><%= cat.colors[6] %></label>
+
+    <input id="7" type="radio" name="cat[color]" value="<%= cat.colors[7] %>" <%= cat.color == cat.colors[7] ? "checked" : ""%>>
+    <label for="7"><%= cat.colors[7] %></label>
+
+    <input id="8" type="radio" name="cat[color]" value="<% cat.colors[8] %>" <%= cat.color == cat.colors[8] ? "checked" : ""%>>
+    <label for="8"><%= cat.colors[8] %></label>
+
+  <br>
+
+  <label for="sex">Sex: </label>
+    <select id="sex" name="cat[sex]">
+      <option disabled <%= cat.sex ? "" : "selected"%>>--Select Sex--</option>
+      <option value="M" <%= cat.sex == 'M' ? "selected" : ""%> >M</option>
+      <option value="F" <%= cat.sex == 'F' ? "selected" : ""%> >F</option>
+    </select>
+
+  <br>
+
+  <label for="birthday">Birthday: </label>
+    <input id="birthday" type="date" name="cat[birth_date]" value="<%= cat.birth_date %>">
+
+  <br>
+
+  <label for="description">Description: </label>
+    <textarea name="cat[description]" value="<%= cat.description %>"></textarea>
+
+  <br>
+
+  <input type="submit" value="Add/Edit Cat">
+
+</form>
