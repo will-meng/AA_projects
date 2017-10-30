@@ -1,0 +1,27 @@
+<% header_text = action == :sign_up ? 'New User' : 'Sign-In' %>
+<% action_url = action == :sign_up ? users_url : session_url %>
+<% button_text = action == :sign_up ? 'Go to sign-in' : 'Go to Sign-up!' %>
+<% button_url = action == :sign_up ? new_session_url : new_user_url %>
+
+<%= render 'shared/errors' %>
+
+<h1 class='page-header'><%= header_text %></h1>
+
+<%= button_to button_text, button_url, method: :get %>
+
+<form class="form" action="<%= action_url %>" method="post">
+  <%= auth_token %>
+
+  <p>
+  <label for="email">Email</label>
+  <input type="text" id="email" name="user[email]" value="<%= user.email %>">
+  </p>
+
+  <p>
+  <label for="password">Password</label>
+  <input type="password" id="password" name="user[password]">
+  </P>
+
+  <input type="submit">
+
+</form>

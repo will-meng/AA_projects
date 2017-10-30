@@ -1,0 +1,20 @@
+.section-nav ul {
+	display: flex;
+  justify-content: center;
+	align-items: center;
+  flex-wrap: wrap;
+	border-bottom: 1px solid $light-gray;
+}
+
+.section-nav li {
+  padding: 10px;
+}
+
+.section-nav li:last-of-type {
+  text-decoration: underline;
+}
+
+.section-nav a:hover {
+  background-color: $light-gray;
+  text-decoration: none;
+}

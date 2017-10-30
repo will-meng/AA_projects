@@ -1,0 +1,58 @@
+<% header_text = %>
+  <% action == :new ? "New #{album.title} Track!" : "Edit #{track.title}" %>
+<% action_url = action == :new ? tracks_url : track_url(track.id) %>
+
+<%= render 'shared/errors' %>
+
+<h1 class="page-header"><%= header_text %></h1>
+
+<form class="form" action="<%= action_url %>" method="post">
+  <% if action == :edit %>
+    <input type="hidden" name="_method" value="patch">
+  <% end %>
+  <%= auth_token %>
+
+  <p>
+  <label for="track-title">Name</label>
+  <input type="text" id="track-title" name="track[title]" value="<%= track.title %>">
+  </p>
+
+  <p>
+  <label for="track-band">Album</label>
+  <select id="track-band" name="track[album_id]">
+    <% albums.each do |album| %>
+      <option value="<%= album.id %>"
+        <%= track.album_id == album.id ? 'selected' : '' %>><%= album.title %>
+      </option>
+    <% end %>
+  </select>
+  </p>
+
+  <p>
+    <label for="track-ord">Ord</label>
+    <input type="number" id="track-ord" name="track[ord]" value="<%= track.ord %>">
+  </p>
+
+  <p>
+  <label for="track-standard">Regular</label>
+  <input id="track-standard"
+         type="radio"
+         name="track[bonus]"
+         value="f"
+         <%= track.bonus ? '' : 'checked' %> >
+  <label for="track-bonus">Bonus</label>
+  <input id="track-bonus"
+         type="radio"
+         name="track[bonus]"
+         value="t"
+         <%= track.bonus ? 'checked' : '' %> >
+  </p>
+
+  <p>
+    <label for="track-lyrics">Lyrics</label>
+    <textarea id="track-lyrics" name="track[lyrics]" rows="10" cols="40"
+    ><%= track.lyrics %></textarea>
+  </p>
+
+  <input type="submit">
+</form>

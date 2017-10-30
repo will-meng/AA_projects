@@ -1,0 +1,26 @@
+// Place all the styles related to the Tracks controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+
+.lyrics {
+  font-family: 'Raleway', sans-serif;
+  font-size: 20px;
+  color: white;
+}
+
+.note-item {
+  width: 400px;
+}
+
+.note-item p {
+  margin-bottom: 20px;
+}
+
+.note-nav {
+  display: flex;
+  justify-content: space-between;
+}
+
+textarea {
+  resize: none;
+}

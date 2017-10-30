@@ -1,0 +1,21 @@
+<h1 class="page-header"><%= @album.title %></h1>
+
+<% tracks = @album.tracks %>
+<% if tracks.empty? %>
+  <p>This album has no tracks... yet!</p>
+<% else %>
+  <ul class="main-list">
+    <% tracks.each do |track| %>
+    <li><a href="<%= track_url(track.id) %>"><p><%= track.title %></p></a></li>
+    <% end %>
+  </ul>
+<% end %>
+
+<h4 class="sub-header">Links</h4>
+
+<ul class="page-links">
+  <a class="button" href="<%= new_album_track_url(@album.id) %>">New Track</a>
+  <a class="button" href="<%= edit_album_url %>">Edit Album</a>
+  <%= button_to 'Destroy Album', album_url(@album.id) , method: :delete %>
+  <a class="button" href="<%= band_url(@band.id) %>">Back to <%= @band.name %></a>
+</ul>

@@ -1,0 +1,21 @@
+<% unless notes.empty? %>
+  <ul class="note-item">
+    <% notes.each do |note| %>
+      <li>
+        <p><%= h(note.text) %></p>
+
+        <div class="note-nav">
+        <p>Authored by: <%= note.user.email %></p>
+
+        <% if current_user.id == note.user_id %>
+        <form action="<%= track_note_url(note.track_id, note.id) %>" method="post">
+          <input type="hidden" name="_method" value="delete">
+          <%= auth_token %>
+          <input type="submit" value="Destroy Note">
+        </form>
+        <% end %>
+        </div>
+      </li>
+    <% end %>
+  </ul>
+<% end %>
