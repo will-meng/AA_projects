@@ -1,0 +1,9 @@
+<ul>
+  <% @all_comments.where(parent_comment_id: nil).each do |comment| %>
+    <li><a href="<%= comment_url(comment.id) %>"><%= comment.content %></a>
+    </li>
+    <% @all_comments.where(parent_comment_id: comment.id).each do |child| %>
+      <%= render 'comments/comment', comment: child %>
+    <% end %>
+  <% end %>
+</ul>

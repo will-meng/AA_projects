@@ -1,0 +1,19 @@
+<% action_url = action == :sign_up ? users_url : session_url %>
+
+<form class="form" action="<%= action_url %>" method="post">
+  <%= auth_token %>
+
+  <label>Username
+    <input type="text" name="user[username]" value="<%= user.username %>">
+  </label>
+
+  <label>Password
+    <input type="password" name="user[password]">
+  </label>
+
+  <input type="submit">
+</form>
+
+<% if action == :sign_in %>
+  <a href="<%= new_user_url %>">Sign up!</a>
+<% end %>

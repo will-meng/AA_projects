@@ -1,0 +1,35 @@
+<h1><a href="<%= @post.url %>"><%= @post.title %>
+</a> by <%= @post.author.username %>
+</h1>
+
+<p>Content:<br><br>
+  <%= @post.content %>
+</p>
+
+<%= button_to "Upvote", votes_url %>
+
+<h4>Subs</h4>
+<ul>
+  <% unless @post.subs.empty? %>
+    <% @post.subs.each do |sub| %>
+      <li><a href="<%= sub_url(sub.id) %>"><%= sub.title %></a></li>
+    <% end %>
+  <% end %>
+</ul>
+
+<h1>Comments</h1>
+
+<a href="<%= new_post_comment_url(@post.id) %>">Comment on this post!</a>
+
+<% if @comments_by_parent_id[nil].empty? %>
+  <br>
+<% else %>
+  <% @comments_by_parent_id[nil].each do |comment| %>
+    <%= render 'comments/comment', comment: comment %>
+  <% end %>
+<% end %>
+
+
+<% if current_user == @post.author %>
+  <a href="<%= edit_post_url(@post.id) %>">Edit</a>
+<% end %>

@@ -1,0 +1,9 @@
+<ul>
+  <% child_comments.each do |comment| %>
+    <li><a href="<%= comment_url(comment.id) %>"><%= comment.content %></a>
+    </li>
+    <% unless comment.child_comments.empty? %>
+      <%= render 'comments/comment', child_comments: comment.child_comments %>
+    <% end %>
+  <% end %>
+</ul>
