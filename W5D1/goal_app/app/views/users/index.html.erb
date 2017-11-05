@@ -1,0 +1,10 @@
+
+<h3>Index Page</h3>
+
+<h4>Users</h4>
+
+<ul>
+  <% User.all.each do |user| %>
+    <li><%= link_to "#{user.username}", user_url(user) %></li>
+  <% end %>
+</ul>

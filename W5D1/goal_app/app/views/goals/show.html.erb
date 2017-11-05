@@ -1,0 +1,18 @@
+<h3><%= @goal.title %></h3>
+
+
+  <label>Title:
+    <%= @goal.title %>
+  </label>
+  <br>
+  <label>Details:
+    <%= @goal.details %>
+  </label>
+  <br>
+
+  <% if @goal.private %>
+    <p>Private</p>
+  <% end %>
+  <% if @goal.completed %>
+     <p>Completed</p>
+  <% end %>

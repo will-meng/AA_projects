@@ -1,0 +1,21 @@
+<h3>New Goal</h3>
+
+<form action="<%= goals_url %>" method="post">
+  <label>Title
+    <input type="text" name="goal[title]" value="">
+  </label>
+  <br>
+  <label>Details
+    <textarea name="goal[details]" rows="8" cols="40"></textarea>
+  </label>
+  <br>
+  <label>Private
+    <input type="checkbox" name="goal[private]">
+  </label>
+  <br>
+  <label>Completed
+    <input type="checkbox" name="goal[completed]">
+  </label>
+  <br>
+  <button type="submit" name="button">New Goal</button>
+</form>

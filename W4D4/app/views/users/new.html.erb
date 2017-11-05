@@ -1,0 +1,26 @@
+<h1>Sign up so you can rent CATZ</h1>
+
+<!-- display errors -->
+<% unless flash[:errors].nil? %>
+  <ul>
+    <% flash[:errors].each do |error| %>
+      <li><%= error %></li>
+    <% end %>
+  </ul>
+<% end %>
+
+<form action="<%= users_url %>" method="post">
+
+<!--TODO csrf token-->
+<input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
+
+<label for="username">Username: </label>
+<input type="text" id="username" name="user[username]"
+  value="<%= @user.username %>">
+
+<label for="password">Password: </label>
+<input type="password" id="password" name="user[password]">
+
+<button type="submit">Create Yourself</button>
+
+</form>
