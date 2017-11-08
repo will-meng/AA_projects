@@ -1,0 +1,70 @@
+body{
+  font-family: sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+h1{
+  font-size: 64px;
+}
+
+ul{
+  display: flex;
+  flex-wrap: wrap;
+
+  border: 2.5px solid black;
+  height: 300px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  width: 300px;
+}
+
+li{
+  background-color: lightgray;
+  border: 2.5px solid black;
+  width: 31.6%;
+  height: 31.5%;
+  line-height: 1.25;
+}
+
+
+li:hover{
+  background-color: yellow;
+  cursor: pointer;
+}
+
+.game-over, .game-over:hover{
+  background-color: white;
+}
+
+.clicked{
+  background-color: white;
+  font-size: 64px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.clicked:hover{
+  background-color: white;
+}
+
+p{
+  font-size: 32px;
+  font-weight: bold;
+  padding: 1% 0;
+  margin: 0;
+  text-decoration: uppercase;
+  text-align: center;
+}
+
+.winner, .winner:hover{
+  background-color: green;
+  color: white;
+}
+
+.loser, .loser:hover{
+  color: red;
+}

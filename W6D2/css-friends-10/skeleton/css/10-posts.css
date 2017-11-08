@@ -1,0 +1,19 @@
+/* PHASE 10: Posts */
+article{
+  display: flex;
+
+}
+
+.post-text{
+  display: flex;
+  flex-direction: column;
+}
+
+.post-footer{
+  display: flex;
+  justify-content: space-between;
+}
+
+.post-footer ul{
+  display: flex;
+}

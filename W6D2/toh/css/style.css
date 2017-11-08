@@ -1,0 +1,42 @@
+body{
+  width: 100vw;
+}
+
+.hanoi{
+  display: flex;
+  justify-content: space-between;
+  width: 50%;
+  margin: 0 auto;
+}
+
+ul{
+  height: 100px;
+  width: 100px;
+  background-color: gray;
+  border-bottom: 5px solid black;
+  list-style: none;
+  padding: 0;
+}
+
+ul:hover{
+  border-bottom: 5px solid blue;
+  cursor: pointer;
+}
+
+.disc-0{
+  background-color: yellow;
+  width: 30%;
+  height: 30%;
+}
+
+.disc-1{
+  background-color: yellow;
+  width: 60%;
+  height: 30%;
+}
+
+.disc-2{
+  background-color: yellow;
+  width: 90%;
+  height: 30%;
+}
