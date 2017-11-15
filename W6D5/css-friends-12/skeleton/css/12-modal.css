@@ -1,0 +1,49 @@
+/* PHASE 12: Modal */
+.modal {
+  display: none;
+}
+
+.modal-screen {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 2;
+  background: rgba(0, 0, 0, 0.8);
+}
+
+.modal-form {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  position: absolute;
+  padding: 20px;
+  border-radius: 5px;
+  width: 400px;
+  top: 50px;
+  left: 50%; 
+  transform: translateX(-50%); 
+  /*left 50% is relative to it parent's left
+  translataeX 50% is relative to itself*/
+  z-index: 3;
+  background-color: white; 
+}
+
+.modal-form-header {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  /*if things arent flexing how you like, try 1) width 
+  2) position 3) height 4) display*/
+  align-items: flex-start;
+  font-size: 32px;
+}
+
+.modal-form input, p {
+  margin-bottom: 20px;
+}
+
+.is-open {
+  display: block;
+}
