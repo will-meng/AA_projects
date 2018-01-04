@@ -8,7 +8,7 @@
 
 require_relative 'ring_buffer'
 
-class QueueWithMax
+class QueueWithMaxOld
   attr_accessor :store
   HALF_SIZE = 8 # total size is double this, since there are 2 ring buffers
 
@@ -56,5 +56,50 @@ class QueueWithMax
     el.push(val)
     el.push(array.length == 0 ? val : [val, array[array.length - 1][1]].max)
     array.push(el)
+  end
+end
+
+class QueueWithMax
+  attr_accessor :store
+
+  def initialize
+    @store = RingBuffer.new
+    @max_arr = RingBuffer.new
+  end
+
+  def enqueue(val)
+    add_to_max_arr(val)
+    store.push(val)
+  end
+
+  def dequeue
+    raise 'queue is empty' if length == 0
+    val = store.shift
+    remove_from_max_arr(val)
+    val
+  end
+
+  def max
+    return nil if length == 0
+    max_arr[0]
+  end
+
+  def length
+    store.length
+  end
+
+  private
+  attr_reader :max_arr
+
+  def add_to_max_arr(val)
+    while max_arr.length > 0 && val > max_arr[max_arr.length - 1]
+      max_arr.pop
+    end
+    
+    max_arr.push(val)
+  end
+
+  def remove_from_max_arr(val)
+    max_arr.shift if val == max_arr[0]
   end
 end
