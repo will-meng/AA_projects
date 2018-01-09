@@ -3,7 +3,7 @@ class BinaryMinHeap
 
   def initialize(&prc)
     @store = []
-    @prc = prc
+    @prc = prc || proc { |el1, el2| el1 <=> el2 }
   end
 
   def count
@@ -11,9 +11,11 @@ class BinaryMinHeap
   end
 
   def extract
+    raise 'no root node' if count == 0
+
     store[0], store[count - 1] = store[count - 1], store[0]
     extracted = store.pop
-    self.class.heapify_down(store, 0, count, &prc)
+    self.class.heapify_down(store, 0, count, &prc) if count > 0
     extracted
   end
 
@@ -70,7 +72,7 @@ class BinaryMinHeap
     
     loop do
       break if child_idx == 0
-      parent_idx = self.parent_index(child_idx)
+      parent_idx = parent_index(child_idx)
       if prc.call(array[child_idx], array[parent_idx]) == -1
         array[child_idx], array[parent_idx] = array[parent_idx], array[child_idx]
         child_idx = parent_idx
