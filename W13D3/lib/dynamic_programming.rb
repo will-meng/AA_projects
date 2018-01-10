@@ -75,28 +75,76 @@ class DynamicProgramming
   end
 
   def super_frog_hops_top_down_helper(n, k, n_max = n)
-    return @super_frog_cache[[n_max, k]][n] if @super_frog_cache[[n_max, k]][n]
+    nk = [n_max, k] # key for the cache for this particular n, k pair
+    return @super_frog_cache[nk][n] if @super_frog_cache[nk][n]
 
-    @super_frog_cache[[n_max, k]][n] = []
+    @super_frog_cache[nk][n] = []
     1.upto([n - 1, k].min) do |i|
       super_frog_hops_top_down_helper(n - i, k, n_max).each do |subarr|
-        @super_frog_cache[[n_max, k]][n] << subarr + [i]
+        @super_frog_cache[nk][n] << subarr + [i] # solutions for n - i with i as last step
       end
     end
-    @super_frog_cache[[n_max, k]][n] << [n] if k >= n
+    @super_frog_cache[nk][n] << [n] if k >= n # one jump to reach top
 
-    @super_frog_cache[[n_max, k]][n]
+    @super_frog_cache[nk][n]
   end
 
   def knapsack(weights, values, capacity)
-
+    table = knapsack_table(weights, values, capacity)
+    # p table
+    table[-1][-1]
   end
 
   # Helper method for bottom-up implementation
   def knapsack_table(weights, values, capacity)
+    n = weights.length
+    table = [Array.new(n, 0)]
 
+    1.upto(capacity) do |cur_cap|
+      cur_row = []
+      n.times do |i|
+        # best combined value from this value + prev best
+        prev_weight = cur_cap - weights[i] # highest weight not including mine
+        prev_best = 
+        if prev_weight >= 0
+          i - 1 >= 0 ? table[prev_weight][i - 1] + values[i] : values[i]
+        else
+          0
+        end
+
+        # pick best solution from prev index in row or prev solution + current
+        cur_row[i] = [cur_row[i - 1] || 0, prev_best].max
+      end
+      table << cur_row
+    end
+
+    table
   end
 
   def maze_solver(maze, start_pos, end_pos)
+    return [end_pos] if start_pos == end_pos
+
+    # try 4 possible directions and pick one with shortest path
+    x, y = start_pos
+    possibilities = [[x - 1, y], [x + 1, y], [x, y - 1], [x, y + 1]]
+    best = [nil, nil] # [dist, pos]
+    finish_found = false
+
+    possibilities.each_with_index do |pos, i|
+      if pos == end_pos
+        finish_found = true
+        best[1] = pos
+      end
+
+      next unless pos[0].between?(0, maze.length) &&
+                  pos[1].between?(0, maze[0].length) &&
+                  maze[pos[0]][pos[1]] != 'X' &&
+                  !finish_found
+      
+      dist = (pos[0] - end_pos[0]) ** 2 + (pos[1] - end_pos[1]) ** 2
+      best = [dist, pos] if !best[0] || dist < best[0]
+    end
+
+    [start_pos] + maze_solver(maze, best[1], end_pos)
   end
 end
