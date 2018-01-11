@@ -9,6 +9,7 @@ class DynamicProgramming
                     3 => [[1, 1, 1], [1, 2], [2, 1], [3]] 
                   }
     @super_frog_cache = {} # keys will be [n, k], values will be like @frog_cache
+    @maze_paths = []
   end
 
   def blair_nums(n)
@@ -107,9 +108,9 @@ class DynamicProgramming
         prev_weight = cur_cap - weights[i] # highest weight not including mine
         prev_best = 
         if prev_weight >= 0
-          i - 1 >= 0 ? table[prev_weight][i - 1] + values[i] : values[i]
+          i > 0 ? table[prev_weight][i - 1] + values[i] : values[i]
         else
-          0
+          0 # current weight is higher than current capacity
         end
 
         # pick best solution from prev index in row or prev solution + current
@@ -121,7 +122,7 @@ class DynamicProgramming
     table
   end
 
-  def maze_solver(maze, start_pos, end_pos)
+  def maze_solver2(maze, start_pos, end_pos)
     return [end_pos] if start_pos == end_pos
 
     # try 4 possible directions and pick one with shortest path
@@ -146,5 +147,25 @@ class DynamicProgramming
     end
 
     [start_pos] + maze_solver(maze, best[1], end_pos)
+  end
+
+  def maze_solver(maze, start_pos, end_pos, path = [])
+    if start_pos == end_pos
+      @maze_paths << path + [start_pos]
+      return
+    end
+
+    x, y = start_pos
+    possibilities = [[x - 1, y], [x + 1, y], [x, y - 1], [x, y + 1]]
+    
+    possibilities.each do |pos|
+      next unless pos[0].between?(0, maze.length - 1) &&
+                  pos[1].between?(0, maze[0].length - 1) &&
+                  maze[pos[0]][pos[1]] != 'X' &&
+                  !path.include?(pos) # path never backtracks
+      maze_solver(maze, pos, end_pos, path + [start_pos])
+    end
+
+    @maze_paths
   end
 end
