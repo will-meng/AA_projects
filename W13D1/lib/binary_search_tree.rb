@@ -34,18 +34,43 @@ class BinarySearchTree
   end
 
   # helper method for #delete:
-  def maximum(tree_node = @root, parent = nil)
-    tree_node.right ? maximum(tree_node.right) : [tree_node, parent]
+  def maximum(tree_node = @root)
+    tree_node.right ? maximum(tree_node.right) : tree_node
   end
 
-  def depth(tree_node = @root)
+  def maximum_with_parent(tree_node = @root, parent = nil)
+    if tree_node.right
+      maximum_with_parent(tree_node.right, tree_node)
+    else
+      [tree_node, parent]
+    end
+  end
 
+  def depth(tree_node = @root, depth_cache = {})
+    return -1 if tree_node.nil?
+    return depth_cache[tree_node] if depth_cache[tree_node]
+
+    depth_cache[tree_node] = 1 + [
+      depth(tree_node.left, depth_cache), 
+      depth(tree_node.right, depth_cache)
+    ].max
   end 
 
-  def is_balanced?(tree_node = @root)
+  def is_balanced?(tree_node = @root, depth_cache = {})
+    return true if tree_node.nil?
+    
+    diff = (depth(tree_node.left, depth_cache) - 
+            depth(tree_node.right, depth_cache)).abs
+    is_balanced?(tree_node.left, depth_cache) && 
+      is_balanced?(tree_node.right, depth_cache) && 
+      diff <= 1
   end
 
   def in_order_traversal(tree_node = @root, arr = [])
+    in_order_traversal(tree_node.left, arr) if tree_node.left
+    arr << tree_node.value
+    in_order_traversal(tree_node.right, arr) if tree_node.right
+    arr
   end
 
 
@@ -77,8 +102,10 @@ class BinarySearchTree
     replacement =
     if left && right
       # replace node with the maximum of left subtree
-      max_node, max_parent = maximum(left, node)
+      max_node, max_parent = maximum_with_parent(left, node)
       remove_node(max_node, max_parent)
+      max_node.left = left
+      max_node.right = right
       max_node
     elsif left
       # set left child as parent's new child
@@ -89,15 +116,14 @@ class BinarySearchTree
       # no children, just delete this node
       nil
     end
+
     if parent
       parent.left == node ? parent.left = replacement : parent.right = replacement
     else
-      # this is the root node, so just remove its value
-      node.value = nil
-      return nil
+      # this is the root node, so make the replacement the new root
+      @root = replacement
     end
 
     node
   end
-
 end
