@@ -7,8 +7,14 @@
 
 # Import any files you need to
 
+require_relative 'graph'
 
+def install_order(arr, vertices = [])
 
-def install_order(arr)
+end
 
+def build_graph(arr, vertices)
+  arr.each do |id, dependency|
+    
+  end
 end
