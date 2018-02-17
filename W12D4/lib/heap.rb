@@ -20,7 +20,7 @@ class BinaryMinHeap
   end
 
   def peek
-    nil if count == 0
+    return nil if count == 0
     store[0]
   end
 

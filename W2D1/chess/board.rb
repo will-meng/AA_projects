@@ -51,12 +51,7 @@ class Board
 
   def in_bound(pos)
     x, y = pos
-    if x < 8 && x >= 0 && y < 8 && y >= 0
-      true
-    else
-      false
-    end
-
+    x < 8 && x >= 0 && y < 8 && y >= 0
   end
 
   def [](pos)

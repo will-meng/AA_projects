@@ -8,13 +8,21 @@
 # Import any files you need to
 
 require_relative 'graph'
+require_relative 'topological_sort'
 
-def install_order(arr, vertices = [])
+def install_order(arr)
+  vertices = build_graph(arr)
+  topological_sort(vertices).map { |vertex| vertex.value }
 
 end
 
-def build_graph(arr, vertices)
-  arr.each do |id, dependency|
-    
+def build_graph(arr)
+  max_id = arr.flatten.max # O(n)
+  vertices = (0..max_id).to_a.map { |id| Vertex.new(id) } # O(n)
+  
+  arr.each do |id, dependency| # O(n ** 2) in worst case
+    Edge.new(vertices[dependency], vertices[id])
   end
+  
+  vertices
 end
