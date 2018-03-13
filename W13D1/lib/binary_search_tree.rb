@@ -9,121 +9,130 @@ class BinarySearchTree
     @root = nil
   end
 
+  # def insert(value, tree_node = @root)
+  #   if @root.nil?
+  #     @root = BSTNode.new(value)
+  #     return
+  #   end
+    
+  #   if value < tree_node.value
+  #     tree_node.left ? insert(value, tree_node.left) : tree_node.left = BSTNode.new(value)
+  #   else
+  #     tree_node.right ? insert(value, tree_node.right) : tree_node.right = BSTNode.new(value)
+  #   end
+  # end
+
   def insert(value)
-    if @root
-      insert_subtree(@root, value)
-    else
-      @root = BSTNode.new(value)
-    end
+    @root = insert_step(value, @root)
   end
 
-  def find(value, tree_node = @root)
-    return nil unless tree_node
-    case value <=> tree_node.value
-    when -1
-      tree_node.left ? find(value, tree_node.left) : nil
-    when 0
-      tree_node
-    when 1
-      tree_node.right ? find(value, tree_node.right) : nil
+  private
+  def insert_step(value, tree_node)
+    return BSTNode.new(value) if tree_node.nil?
+
+    if value < tree_node.value
+      tree_node.left = insert_step(value, tree_node.left)
+    else
+      tree_node.right = insert_step(value, tree_node.right)
     end
+
+    tree_node
+  end
+  public
+
+  def find(value, tree_node = @root)
+    return nil if tree_node.nil?
+    return tree_node if tree_node.value == value
+
+    value < tree_node.value ? find(value, tree_node.left) : find(value, tree_node.right)
   end
 
   def delete(value)
-    @root ? delete_subtree(value, @root) : nil
+    delete_from_subtree(value, @root, nil, nil)
   end
 
-  # helper method for #delete:
-  def maximum(tree_node = @root)
-    tree_node.right ? maximum(tree_node.right) : tree_node
-  end
+  private
+  def delete_from_subtree(value, tree_node, parent, dir)
+    return nil if tree_node.nil?
 
-  def maximum_with_parent(tree_node = @root, parent = nil)
-    if tree_node.right
-      maximum_with_parent(tree_node.right, tree_node)
-    else
-      [tree_node, parent]
+    case value <=> tree_node.value
+    when 0
+      remove_node(tree_node, parent, dir)
+      tree_node
+    when -1
+      delete_from_subtree(value, tree_node.left, tree_node, 'left')
+    when 1
+      delete_from_subtree(value, tree_node.right, tree_node, 'right')
     end
   end
 
-  def depth(tree_node = @root, depth_cache = {})
-    return -1 if tree_node.nil?
-    return depth_cache[tree_node] if depth_cache[tree_node]
+  def remove_node(tree_node, parent, dir)
+    if parent.nil?
+      #remove root node
+      @root = nil
+      return
+    end
+    
+    replacement = if tree_node.left && tree_node.right
+      # replace tree_node with maximum from left subtree
+      # 1. left_parent_of_max.right = max.left
+      # 2. max.left = tree_node.left
+      # 3. max.right = tree_node.right
+      # 4. parent of tree_node now points to max
 
-    depth_cache[tree_node] = 1 + [
-      depth(tree_node.left, depth_cache), 
-      depth(tree_node.right, depth_cache)
-    ].max
+      # if tree_node.left has no right child, skip 1-2 above
+      if tree_node.left.right
+        left_parent_of_max, max_node = maximum_with_left_parent(tree_node)
+        left_parent_of_max.right = max_node.left
+        max_node.left = tree_node.left
+      else
+        max_node = tree_node.left
+      end
+
+      max_node.right = tree_node.right
+      max_node
+    elsif tree_node.left
+      # single child is replacement node
+      tree_node.left
+    elsif tree_node.right
+      # single child is replacement node
+      tree_node.right
+    else
+      # no children, just remove this node
+      nil
+    end
+
+    dir == 'left' ? parent.left = replacement : parent.right = replacement
+  end
+
+  def maximum_with_left_parent(tree_node)
+    # assume tree_node.right exists
+    if tree_node.right.right
+      maximum_with_left_parent(tree_node.right)
+    else
+      [tree_node, tree_node.right]
+    end
+  end
+
+  public
+  # helper method for #delete:
+  def maximum(tree_node = @root)
+    return nil if tree_node.nil?
+
+    tree_node.right ? maximum(tree_node.right) : tree_node
+  end
+
+  def depth(tree_node = @root)
   end 
 
-  def is_balanced?(tree_node = @root, depth_cache = {})
-    return true if tree_node.nil?
-    
-    diff = (depth(tree_node.left, depth_cache) - 
-            depth(tree_node.right, depth_cache)).abs
-    is_balanced?(tree_node.left, depth_cache) && 
-      is_balanced?(tree_node.right, depth_cache) && 
-      diff <= 1
+  def is_balanced?(tree_node = @root)
   end
 
   def in_order_traversal(tree_node = @root, arr = [])
-    in_order_traversal(tree_node.left, arr) if tree_node.left
-    arr << tree_node.value
-    in_order_traversal(tree_node.right, arr) if tree_node.right
-    arr
   end
 
 
   private
   # optional helper methods go here:
-  def insert_subtree(node, value)
-    if value < node.value
-      node.left ? insert_subtree(node.left, value) : node.left = BSTNode.new(value)
-    else
-      node.right ? insert_subtree(node.right, value) : node.right = BSTNode.new(value)
-    end
-  end
 
-  def delete_subtree(value, node, parent = nil)
-    case value <=> node.value
-    when -1
-      node.left ? delete_subtree(value, node.left, node) : nil
-    when 0
-      remove_node(node, parent)
-    when 1
-      node.right ? delete_subtree(value, node.right, node) : nil
-    end
-  end
-
-  def remove_node(node, parent)
-    left = node.left
-    right = node.right
-
-    replacement =
-    if left && right
-      # replace node with the maximum of left subtree
-      max_node, max_parent = maximum_with_parent(left, node)
-      remove_node(max_node, max_parent)
-      max_node.left = left
-      max_node.right = right
-      max_node
-    elsif left
-      # set left child as parent's new child
-      left
-    elsif right
-      right
-    else
-      # no children, just delete this node
-      nil
-    end
-
-    if parent
-      parent.left == node ? parent.left = replacement : parent.right = replacement
-    else
-      # this is the root node, so make the replacement the new root
-      @root = replacement
-    end
-
-    node
-  end
 end

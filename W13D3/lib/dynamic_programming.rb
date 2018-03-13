@@ -9,6 +9,7 @@ class DynamicProgramming
                     3 => [[1, 1, 1], [1, 2], [2, 1], [3]] 
                   }
     @super_frog_cache = {} # keys will be [n, k], values will be like @frog_cache
+    @sfc2 = {} # first key is n, second key is k
     @maze_paths = []
   end
 
@@ -69,10 +70,51 @@ class DynamicProgramming
     @frog_cache[n]
   end
 
-  def super_frog_hops(n, k) # n = total stairs, k = max jump
+  def super_frog_hops2(n, k) # n = total stairs, k = max jump
     return nil if n < 1 || k < 1
     @super_frog_cache[[n, k]] = { 1 => [[1]] } unless @super_frog_cache[[n, k]]
     super_frog_hops_top_down_helper(n, k)
+  end
+
+  def super_frog_hops3122018(n, k)
+    @sfc2[1] ||= {}
+    @sfc2[1][k] ||= [[1]]
+    # @sfc2[[1, k]] ||= [[1]]
+    
+    2.upto(n) do |i|
+      ways = []
+      [1, i - k].max.upto(i - 1) do |j|
+        @sfc2[j][k].each do |way|
+        # @sfc2[[j,k]].each do |way|
+         ways << way + [i - j] # prev solution with i-j sized jump at end
+        end
+      end
+      ways << [i] if k >= i # one hop to top
+      @sfc2[i] ||= {}
+      @sfc2[i][k] = ways
+      # @sfc2[[i, k]] = ways
+    end
+
+    @sfc2[n][k]
+    # @sfc2[[n, k]]
+  end
+
+  def super_frog_hops(n, k)
+    return @sfc2[n][k] if @sfc2[n] && @sfc2[n][k]
+    @sfc2[1] ||= {}
+    @sfc2[1][k] ||= [[1]]
+
+    ways = []
+    [1, n - k].max.upto(n - 1) do |i|
+      super_frog_hops(i, k).each do |way|
+        ways << way + [n - i]
+      end
+    end
+
+    ways << [n] if k >= n
+    
+    @sfc2[n] ||= {}
+    @sfc2[n][k] = ways
   end
 
   def super_frog_hops_top_down_helper(n, k, n_max = n)
@@ -90,10 +132,37 @@ class DynamicProgramming
     @super_frog_cache[nk][n]
   end
 
-  def knapsack(weights, values, capacity)
+  def knapsack2(weights, values, capacity)
     table = knapsack_table(weights, values, capacity)
     # p table
     table[-1][-1]
+  end
+
+  def knapsack(w, v, cap)
+    len = w.length
+    table = Array.new(cap + 1) { Array.new(len) }
+    table[0] = Array.new(len, 0)
+
+    (1).upto(cap) do |c|
+      len.times do |i|
+        if i == 0
+          table[c][i] = w[i] <= c ? v[i] : 0
+          next
+        end
+
+        best = table[c][i - 1] # previous best
+        remaining_weight = c - w[i]
+
+        if remaining_weight >= 0
+          current = v[i] + table[remaining_weight][i - 1]
+          best = [best, current].max
+        end
+        
+        table[c][i] = best
+      end
+    end
+
+    table[cap][len - 1]
   end
 
   # Helper method for bottom-up implementation
