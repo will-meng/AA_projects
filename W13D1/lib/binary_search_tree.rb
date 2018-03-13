@@ -48,32 +48,29 @@ class BinarySearchTree
   end
 
   def delete(value)
-    delete_from_subtree(value, @root, nil, nil)
+    @root = delete_from_subtree(@root, value)
   end
 
   private
-  def delete_from_subtree(value, tree_node, parent, dir)
-    return nil if tree_node.nil?
+  def delete_from_subtree(node, value)
+    # returns either same node (if not found), or replacement node (if found)
+    return nil if node.nil?
 
-    case value <=> tree_node.value
+    case value <=> node.value
     when 0
-      remove_node(tree_node, parent, dir)
-      tree_node
+      node = remove_node(node)
     when -1
-      delete_from_subtree(value, tree_node.left, tree_node, 'left')
+      node.left = delete_from_subtree(node.left, value)
     when 1
-      delete_from_subtree(value, tree_node.right, tree_node, 'right')
+      node.right = delete_from_subtree(node.right, value)
     end
+    node
   end
 
-  def remove_node(tree_node, parent, dir)
-    if parent.nil?
-      #remove root node
-      @root = nil
-      return
-    end
+  def remove_node(tree_node)
+    # must return replacement for deleted node
     
-    replacement = if tree_node.left && tree_node.right
+    if tree_node.left && tree_node.right
       # replace tree_node with maximum from left subtree
       # 1. left_parent_of_max.right = max.left
       # 2. max.left = tree_node.left
@@ -82,8 +79,7 @@ class BinarySearchTree
 
       # if tree_node.left has no right child, skip 1-2 above
       if tree_node.left.right
-        left_parent_of_max, max_node = maximum_with_left_parent(tree_node)
-        left_parent_of_max.right = max_node.left
+        max_node = maximum_with_replacement(tree_node.left)
         max_node.left = tree_node.left
       else
         max_node = tree_node.left
@@ -101,16 +97,17 @@ class BinarySearchTree
       # no children, just remove this node
       nil
     end
-
-    dir == 'left' ? parent.left = replacement : parent.right = replacement
   end
 
-  def maximum_with_left_parent(tree_node)
+  def maximum_with_replacement(tree_node)
+    # returns max node, but also sets max's parent's right as max.left
     # assume tree_node.right exists
     if tree_node.right.right
       maximum_with_left_parent(tree_node.right)
     else
-      [tree_node, tree_node.right]
+      max_node = tree_node.right
+      tree_node.right = max_node.left
+      max_node
     end
   end
 
@@ -123,16 +120,33 @@ class BinarySearchTree
   end
 
   def depth(tree_node = @root)
+    return -1 if tree_node.nil?
+
+    [1 + depth(tree_node.left), 1 + depth(tree_node.right)].max
   end 
 
   def is_balanced?(tree_node = @root)
+    # using definition that max depth and min depth differ by at most 1
+    depth(tree_node) - min_depth(tree_node) <= 1
   end
 
   def in_order_traversal(tree_node = @root, arr = [])
+    return if tree_node.nil?
+
+    in_order_traversal(tree_node.left, arr)
+    arr << tree_node.value
+    in_order_traversal(tree_node.right, arr)
+    arr
   end
 
 
   private
   # optional helper methods go here:
+  def min_depth(tree_node = @root)
+    return -1 if tree_node.nil?
+    return 0 if tree_node.left.nil? || tree_node.right.nil?
+      
+    [1 + min_depth(tree_node.left), 1 + min_depth(tree_node.right)].min
+  end 
 
 end
